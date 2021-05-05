@@ -86,8 +86,5 @@ int main (void)
 	GLCD_SetFont(&GLCD_Font_16x24);
 	GLCD_ClearScreen();
 	
-	GLCD_DrawChar(50, 50, 'A');
-	GLCD_DrawChar(100, 100, );
-	
 	return 0;
 }
