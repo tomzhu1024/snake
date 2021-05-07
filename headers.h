@@ -1,10 +1,3 @@
-static int STATE = 0;
-static struct Snake* currentSnake;
-static struct Food* currentFood; 
-static int DIRECTION=3;
-
-
-
 struct Coordinate {
 	int x;
 	int y;
@@ -15,7 +8,7 @@ struct Snake {
 	int buffer;
 	int direction;
 	struct Coordinate* coor;
-	struct Coordinate* boxToClear;
+	struct Coordinate boxToClear;
 };
 
 struct Food {
@@ -37,4 +30,5 @@ int checkDead(struct Snake* snake);
 
 void changeDir(struct Snake* snake);
 
-void drawSnakeBox(int x, int y, unsigned int color);
+void drawSnakeBlock(unsigned int, unsigned int, unsigned int);
+

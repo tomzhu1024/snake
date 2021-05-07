@@ -134,11 +134,11 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -392,6 +392,41 @@
               <FileName>snake.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\snake.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>historyScore.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\historyScore.c</FilePath>
+            </File>
+            <File>
+              <FileName>gameEnd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\gameEnd.c</FilePath>
+            </File>
+            <File>
+              <FileName>gamePause.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\gamePause.c</FilePath>
+            </File>
+            <File>
+              <FileName>gameRecord.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\gameRecord.c</FilePath>
+            </File>
+            <File>
+              <FileName>gameStart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\gameStart.c</FilePath>
+            </File>
+            <File>
+              <FileName>headers.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\headers.h</FilePath>
             </File>
           </Files>
         </Group>

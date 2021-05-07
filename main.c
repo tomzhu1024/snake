@@ -1,3 +1,5 @@
+#include "headers.h"
+
 #define TICK_PER_RENDER 4
 #define BLOCK_SIZE 10
 #define BLOCK_NUM_X 24
@@ -11,6 +13,12 @@
 #include "GLCD_Config.h"
 #include "Board_Touch.h"
 #include <stdlib.h>
+
+
+int STATE = 3;
+struct Snake* currentSnake;
+struct Food* currentFood; 
+int DIRECTION = 3;
 
 struct TouchArea
 {
@@ -27,8 +35,8 @@ static struct TouchArea snakeBTALeft;
 static struct TouchArea snakeBTARight;
 
 static unsigned int renderTickCount = 0;
-static unsigned int tmpX = 120;
-static unsigned int tmpY = 120;
+static unsigned int tmpX = 12;
+static unsigned int tmpY = 12;
 
 extern GLCD_FONT GLCD_Font_16x24;
 void SysTick_Handler(void);
@@ -162,15 +170,42 @@ int checkButtonPressed (int x, int y, struct TouchArea * ta)
 		(ta->startY <= (unsigned)y) && ((unsigned)y <= ta->startY + ta->sizeY);
 }
 
+void drawGame(void){
+	
+	drawSnakeBlock(currentFood->coor.x, currentFood->coor.y,GLCD_COLOR_RED);
+	drawSnakeBlock(currentSnake->boxToClear.x, currentSnake->boxToClear.y,GLCD_COLOR_BLACK);
+	for (int i = 0; i < currentSnake->length; i++) {
+		drawSnakeBlock(currentSnake->coor[i].x, currentSnake->coor[i].y,GLCD_COLOR_WHITE);
+	}
+	
+}
+
+
 void tickHandler (void)
 {
 	if (renderTickCount == 0)
-	{
-		drawSnakeBox(GLCD_COLOR_YELLOW);
-		drawSnakeBlock(0, 0, GLCD_COLOR_RED);
-		drawSnakeBlock(1, 1, GLCD_COLOR_GREEN);
-		drawSnakeBlock(tmpX/10, tmpY/10, GLCD_COLOR_BLUE);
-		drawSnakeButton(370, 136, 50, 60, GLCD_COLOR_RED);
+	{		
+		changeDir(currentSnake);
+		move(currentSnake);
+		
+		
+		if (checkDead(currentSnake)){
+			
+			TIM7->DIER &= ~(1 << 0);
+			STATE = 3;
+			currentSnake = 0;
+			currentFood = 0;
+		}
+		
+		
+		checkFood(currentSnake,currentFood);
+		if (currentFood->eaten){
+			currentFood = getNewFood(currentSnake);
+		}
+		
+		drawGame();
+		
+		
 	}
 	if (++renderTickCount == TICK_PER_RENDER - 1)
 	{
@@ -182,19 +217,19 @@ void touchHandler (int x, int y)
 {
 	if (checkButtonPressed(x, y, &snakeBTAUp) == 1)
 	{
-		tmpY--;
+		DIRECTION = 0;
 	}
 	if (checkButtonPressed(x, y, &snakeBTADown) == 1)
 	{
-		tmpY++;
+		DIRECTION = 1;
 	}
 	if (checkButtonPressed(x, y, &snakeBTALeft) == 1)
 	{
-		tmpX--;
+		DIRECTION = 2;
 	}
 	if (checkButtonPressed(x, y, &snakeBTARight) == 1)
 	{
-		tmpX++;
+		DIRECTION = 3;
 	}
 }
 
@@ -207,6 +242,13 @@ void TIM7_IRQHandler (void)
 	
 int main (void)
 {
+	if (currentSnake == 0){
+		currentSnake = getNewSnake();
+		currentFood = getNewFood(currentSnake);
+	}
+	
+	
+	
 	SystemClock_Config();
 	
 	// initiate display and touch
@@ -227,6 +269,11 @@ int main (void)
 	TIM7->DIER |= (1 << 0);
 	// unmask TIM7 update interrupt
 	NVIC_EnableIRQ(TIM7_IRQn);
+	
+	drawSnakeBox(GLCD_COLOR_YELLOW);
+	//drawSnakeBlock(23, 23, GLCD_COLOR_YELLOW);
+	drawSnakeButton(370, 136, 50, 60, GLCD_COLOR_RED);
+		
 	
 	// detect touch event
 	TOUCH_STATE touchState;

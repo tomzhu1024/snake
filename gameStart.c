@@ -7,18 +7,9 @@ extern struct Snake* currentSnake;
 extern struct Food* currentFood;
 
 
-static void drawGame(void){
-	
-	drawSnakeBox(currentFood->coor.x, currentFood->coor.y,GLCD_COLOR_RED);
-	
-	drawSnakeBox(currentSnake->boxToClear->x, currentSnake->boxToClear->y,GLCD_COLOR_BLACK);
-	for (int i = 0; i < currentSnake->length; i++) {
-		drawSnakeBox(currentSnake->coor[i].x, currentSnake->coor[i].y,GLCD_COLOR_WHITE);
-	}
-	
-}
 
-static void gameStartLoop(void){
+
+static void gameStartUpdate(void){
 	
 	if (currentSnake == 0){
 		currentSnake = getNewSnake();
@@ -41,6 +32,7 @@ static void gameStartLoop(void){
 		if (currentFood->eaten){
 			currentFood = getNewFood(currentSnake);
 		}
+		//drawGame();
+
 	}
-	drawGame();
 }
