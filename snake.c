@@ -1,3 +1,6 @@
+#include "headers.h"
+#include <stdlib.h>
+
 static const int UP = 0;
 static const int DOWN = 1;
 static const int LEFT = 2;
@@ -9,52 +12,31 @@ static const int RIGHT = 3;
 
 
 
-
-
-struct Coordinate {
-	int x;
-	int y;
-};
-
-struct Snake {
-	int length;
-	int buffer;
-	int direction;
-	struct Coordinate* coor;
-};
-
-struct Food {
-	struct Coordinate coor;
-	int eaten;
-};
-
-
-struct Snake* GameInit(int initial_len) {
+struct Snake* getNewSnake() {
+	struct Coordinate* start_coor = (struct Coordinate *) malloc(sizeof(struct Coordinate)*3);
+	start_coor[0].x = 10;
+	start_coor[0].y = 10;
+	start_coor[1].x = 9;
+	start_coor[1].y = 10;
+	start_coor[2].x = 8;
+	start_coor[2].y = 10;
 	
-	struct Coordinate* start_coor = (struct Coordinate *) malloc(sizeof(struct Coordinate)*initial_len);
-	start_coor[0].x = 100;
-	start_coor[0].y = 100;
-	start_coor[1].x = 90;
-	start_coor[1].y = 100;
-	start_coor[2].x = 80;
-	start_coor[2].y = 100;
-
+	struct Coordinate* box_to_clear = (struct Coordinate *) malloc(sizeof(struct Coordinate));
+	box_to_clear->x = 8;
+	box_to_clear->y = 10;
 
 	struct Snake* snake_p = (struct Snake *) malloc(sizeof(struct Snake));
 	snake_p->direction = RIGHT;
 	snake_p->length = 3;
 	snake_p->coor = start_coor;
-	/*snake_p->coor[0].x = 100;
-	snake_p->coor[0].y = 100;
-	snake_p->coor[1].x = 90;
-	snake_p->coor[1].y = 100;
-	snake_p->coor[2].x = 80;
-	snake_p->coor[2].y = 100;*/
-
+	snake_p->boxToClear = box_to_clear;
 	return snake_p;
-
 }
-struct Food* CreateFood(struct Snake* snake) {
+
+
+
+
+struct Food* getNewFood(struct Snake* snake) {
 	struct Food* food = (struct Food *) malloc(sizeof(struct Food));
 	int proper;
 	while (1) {
@@ -73,7 +55,11 @@ struct Food* CreateFood(struct Snake* snake) {
 	}
 	return food;
 }
-static void GrowBuffer(struct Snake* snake) {
+
+
+
+
+void growBuffer(struct Snake* snake) {
 	int new_buffer_size = snake->buffer * 2;
 	struct Coordinate* new_coor = (struct Coordinate *) malloc(sizeof(struct Coordinate)*new_buffer_size);
 	for (int i = 0; i < snake->length; i++) {
@@ -86,15 +72,19 @@ static void GrowBuffer(struct Snake* snake) {
 	snake->buffer = new_buffer_size;
 }
 
-static void CheckFood(struct Snake* snake, struct Food* food) {
+
+
+void checkFood(struct Snake* snake, struct Food* food) {
 	if (snake->coor[0].x == food->coor.x && snake->coor[0].y == food->coor.y) {
 		food->eaten = 1;
 		snake->length++;
 		if (snake->length > snake->buffer) {
-			GrowBuffer(snake);
+			growBuffer(snake);
 		}
 	}
 }
+
+
 
 
 static void Draw(struct Snake* snake, struct Food* food) {
@@ -122,7 +112,11 @@ static void Draw(struct Snake* snake, struct Food* food) {
 	*/
 }
 
-static void Move(struct Snake* snake) {
+
+
+void move(struct Snake* snake) {
+	snake->boxToClear->x = snake->coor[snake->length-1].x;
+	snake->boxToClear->y = snake->coor[snake->length-1].y;
 	for (int i = snake->length  - 1; i > 0; i--) {
 		snake->coor[i].x = snake->coor[i - 1].x;
 		snake->coor[i].y = snake->coor[i-1].y;
@@ -148,7 +142,7 @@ static void Move(struct Snake* snake) {
 
 }
 
-static int CheckDead(struct Snake* snake) {
+ int checkDead(struct Snake* snake) {
 	if (snake->coor[0].x < 0 || snake->coor[0].x > 630 || snake->coor[0].y < 0 || snake->coor[0].y > 630) {
 		return 1;
 	}
@@ -162,14 +156,8 @@ static int CheckDead(struct Snake* snake) {
 	return 0;
 }
 
-static void ChangeDir(struct Snake* snake) {
-
-	int dir = UP;
-	
-	//to do: get user input
-	//dir = _getch();
-	//cout << "Change direction to:" << dir << endl;
-	switch (dir) {
+void changeDir(struct Snake* snake) {
+	switch (DIRECTION) {
 	case 0: if (snake->direction != DOWN) snake->direction = UP;
 		break;
 	case 1: if (snake->direction != UP) snake->direction = DOWN;
@@ -179,42 +167,4 @@ static void ChangeDir(struct Snake* snake) {
 	case 3: if (snake->direction != LEFT) snake->direction = RIGHT;
 		break;
 	}
-
-}
-
-int main() {
-	int max_len = 3;
-	struct Snake* snake_p = GameInit(max_len);
-	struct Food* food = CreateFood(snake_p);
-	int game_over = 0;
-	
-	//to do: main game loop
-	
-	
-	/*
-	while (1) {
-		while (!_kbhit()) {
-			if (food->eaten) {
-				delete food;
-				food = CreateFood(snake_p);
-			}
-			Move(snake_p);
-			Draw(snake_p,food);
-			CheckFood(snake_p, food);
-			if (CheckDead(snake_p)){
-				game_over = 1;
-				break;
-			}
-			Sleep(30);
-		}
-		if (game_over) {
-			cout << '\a';
-			Sleep(100);
-			break;
-		}
-		ChangeDir(snake_p);
-	}
-	cout << "Game Over!";
-	*/
-	return 0;
 }

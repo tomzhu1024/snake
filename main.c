@@ -4,6 +4,18 @@
 #include "Board_Touch.h"
 #include <stdlib.h>
 
+
+
+/*
+0:menu
+1:game start
+2:game pause
+3:game end
+4:history score
+5:game record
+*/
+
+
 // import fonts
 extern GLCD_FONT GLCD_Font_16x24;
 // overclock
@@ -65,6 +77,10 @@ void TIM7_IRQHandler (void)
 	// reset flag
 	TIM7->SR = ~((unsigned) 1 << 0);
 }
+
+
+
+
 	
 int main (void)
 {
@@ -88,3 +104,4 @@ int main (void)
 	
 	return 0;
 }
+
