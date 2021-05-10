@@ -16,7 +16,6 @@
 
 struct TouchArea
 {
-	unsigned int enabled;
 	unsigned int startX;
 	unsigned int startY;
 	unsigned int sizeX;
@@ -53,7 +52,8 @@ struct GameRecord {
 
 // main 
 void renderPage(void);
-
+void startTimer (void);
+void stopTimer (void);
 
 //menu
 void renderMenuPage(void);

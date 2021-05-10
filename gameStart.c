@@ -2,6 +2,7 @@
 #include "Board_GLCD.h"
 #include "GLCD_Config.h"
 #include "stm32f7xx.h"
+#include <stdlib.h>
 
 
 
@@ -58,7 +59,6 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	unsigned int textMarginX = size / 2 - 16;
 	unsigned int textMarginY = size / 2 - 12;
 	// up
-	snakeBTAUp.enabled = 1;
 	snakeBTAUp.startX = centerX - size / 2;
 	snakeBTAUp.startY = centerY - spread - size / 2;
 	snakeBTAUp.sizeX = size;
@@ -66,7 +66,6 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	GLCD_DrawRectangle(snakeBTAUp.startX, snakeBTAUp.startY, snakeBTAUp.sizeX, snakeBTAUp.sizeY);
 	GLCD_DrawString(snakeBTAUp.startX + textMarginX, snakeBTAUp.startY + textMarginY, "UP");
 	// down
-	snakeBTADown.enabled = 1;
 	snakeBTADown.startX = centerX - size / 2;
 	snakeBTADown.startY = centerY + spread - size / 2;
 	snakeBTADown.sizeX = size;
@@ -74,7 +73,6 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	GLCD_DrawRectangle(snakeBTADown.startX, snakeBTADown.startY, snakeBTADown.sizeX, snakeBTADown.sizeY);
 	GLCD_DrawString(snakeBTADown.startX + textMarginX, snakeBTADown.startY + textMarginY, "DN");
 	// left
-	snakeBTALeft.enabled = 1;
 	snakeBTALeft.startX = centerX - spread - size / 2;
 	snakeBTALeft.startY = centerY - size / 2;
 	snakeBTALeft.sizeX = size;
@@ -82,7 +80,6 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	GLCD_DrawRectangle(snakeBTALeft.startX, snakeBTALeft.startY, snakeBTALeft.sizeX, snakeBTALeft.sizeY);
 	GLCD_DrawString(snakeBTALeft.startX + textMarginX, snakeBTALeft.startY + textMarginY, "LT");
 	// right
-	snakeBTARight.enabled = 1;
 	snakeBTARight.startX = centerX + spread - size / 2;
 	snakeBTARight.startY = centerY - size / 2;
 	snakeBTARight.sizeX = size;
@@ -96,7 +93,9 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 
 
 
-void gameStartPageInitialize(void){	
+void gameStartPageInitialize(void){
+	while (!(RNG->SR & (1 << 0)));
+	srand(RNG->DR);
 	//No record is loaded, start new game
 	if (currentSnake == 0){
 		currentGameId = uuid;
@@ -107,13 +106,14 @@ void gameStartPageInitialize(void){
 	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
 	GLCD_ClearScreen();
 	drawSnakeBox(GLCD_COLOR_YELLOW);
-	drawSnakeButton(370, 136, 50, 60, GLCD_COLOR_RED);
+	drawSnakeButton(370, 136, 45, 45, GLCD_COLOR_RED);
+	startTimer();
 }
 
 void drawSnakeAndFood(void){
 	drawSnakeBlock(currentFood->coor.x, currentFood->coor.y,GLCD_COLOR_RED);
 	drawSnakeBlock(currentSnake->boxToClear.x, currentSnake->boxToClear.y,GLCD_COLOR_BLACK);
-	for (int i = 0; i < currentSnake->length; i++) {
+	for (int i = 0; i < currentSnake->length-1; i++) {
 		drawSnakeBlock(currentSnake->coor[i].x, currentSnake->coor[i].y,GLCD_COLOR_WHITE);
 	}
 }
@@ -123,6 +123,7 @@ void gameRender(void){
 	changeDir(currentSnake);
 	move(currentSnake);
 	if (checkDead(currentSnake)){
+		stopTimer();
 		updateHistoryScore();
 		STATE = GAME_END;
 		currentSnake = 0;

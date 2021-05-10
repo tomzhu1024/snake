@@ -12,9 +12,12 @@ struct TouchArea snakeBTAUp;
 struct TouchArea snakeBTADown;
 struct TouchArea snakeBTALeft;
 struct TouchArea snakeBTARight;
+struct TouchArea menuBTANew;
+struct TouchArea menuBTALoad;
+struct TouchArea menuBRAScores;
 
 int PREV_STATE = MENU;
-int STATE = GAME_START;
+int STATE = MENU;
 int DIRECTION = RIGHT;
 int uuid = 1;
 int currentGameId = 0;
@@ -92,11 +95,23 @@ static void SystemClock_Config(void)
 
 int checkButtonPressed (int x, int y, struct TouchArea * ta)
 {
-	return (ta->enabled == 1) && (ta->startX <= (unsigned)x) && ((unsigned)x <= ta->startX + ta->sizeX) &&
+	return (ta->startX <= (unsigned)x) && ((unsigned)x <= ta->startX + ta->sizeX) &&
 		(ta->startY <= (unsigned)y) && ((unsigned)y <= ta->startY + ta->sizeY);
 }
 
+void startTimer (void) {
+	// start counting
+	TIM7->CR1 |= (1 << 0);
+}
+
+void stopTimer (void) {
+	// start counting
+	TIM7->CR1 &= ~((unsigned)1 << 0);
+}
+
 void renderPage(void){
+	GLCD_ClearScreen();
+	
 	switch (STATE){
 		case MENU: {
 			renderMenuPage();
@@ -129,14 +144,9 @@ void renderPage(void){
 void tickHandler (void)
 {
 	if (tickCount == 0){
-		if (PREV_STATE != STATE){
-			PREV_STATE = STATE;
-			renderPage();
-		}
 		if (STATE == GAME_START){
 			gameRender();
 		}
-	
 	}
 	if (++tickCount == tickPSC - 1)
 	{
@@ -149,6 +159,14 @@ void tickHandler (void)
 void touchHandler (int x, int y)
 {
 	switch (STATE){
+		case MENU: {
+			if (checkButtonPressed(x, y, &menuBTANew) == 1)
+			{
+				STATE = GAME_START;
+				renderPage();
+			}
+			break;
+		}
 		case GAME_START :{
 			if (checkButtonPressed(x, y, &snakeBTAUp) == 1)
 			{
@@ -184,12 +202,6 @@ void TIM7_IRQHandler (void)
 	
 int main (void)
 {
-	if (currentSnake == NULL){
-		currentSnake = getNewSnake();
-		currentFood = getNewFood(currentSnake);
-	}
-	
-	
 	
 	SystemClock_Config();
 	
@@ -197,23 +209,25 @@ int main (void)
 	GLCD_Initialize();
 	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
 	GLCD_SetFont(&GLCD_Font_16x24);
-	GLCD_ClearScreen();
 	Touch_Initialize();
 
 	// activate TIM7
 	RCC->APB1ENR |= (1 << 5);
+	// activate RNG
+	RCC->AHB2ENR |= (1 << 6);
+	// enable RNG
+	RNG->CR |= (1 << 2);
+	
 	// config TIM7 to 20Hz
 	TIM7->PSC = 83 - 1;
 	TIM7->ARR = 65060 - 1;
-	// start counting
-	TIM7->CR1 |= (1 << 0);
 	// enable TIM7 update interrupt
 	TIM7->DIER |= (1 << 0);
 	// unmask TIM7 update interrupt
 	NVIC_EnableIRQ(TIM7_IRQn);
 	
-	
-		
+	// render page for the first time
+	renderPage();
 	
 	// detect touch event
 	TOUCH_STATE touchState;
