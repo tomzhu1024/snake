@@ -7,11 +7,6 @@
 
 
 
-#define TICK_PER_RENDER 4
-
-
-
-
 //Global variables
 struct TouchArea snakeBTAUp;
 struct TouchArea snakeBTADown;
@@ -19,19 +14,19 @@ struct TouchArea snakeBTALeft;
 struct TouchArea snakeBTARight;
 
 int PREV_STATE = MENU;
-int STATE = MENU;
+int STATE = GAME_START;
 int DIRECTION = RIGHT;
 int uuid = 1;
 int currentGameId = 0;
 int historyScores[3] = {0,0,0};
 
-struct Snake* currentSnake = 0;
-struct Food* currentFood = 0; 
-struct GameRecord* gameRecords = 0;
+struct Snake* currentSnake = NULL;
+struct Food* currentFood = NULL; 
+struct GameRecord* gameRecords = NULL;
 
+static unsigned int tickCount = 0;
+static unsigned int tickPSC = 4;
 
-
-static unsigned int renderTickCount = 0;
 extern GLCD_FONT GLCD_Font_16x24;
 void SysTick_Handler(void);
 static void SystemClock_Config(void);
@@ -133,7 +128,7 @@ void renderPage(void){
 
 void tickHandler (void)
 {
-	if (renderTickCount == 0){
+	if (tickCount == 0){
 		if (PREV_STATE != STATE){
 			PREV_STATE = STATE;
 			renderPage();
@@ -143,9 +138,9 @@ void tickHandler (void)
 		}
 	
 	}
-	if (++renderTickCount == TICK_PER_RENDER - 1)
+	if (++tickCount == tickPSC - 1)
 	{
-		renderTickCount = 0;
+		tickCount = 0;
 	}
 }
 
@@ -189,7 +184,7 @@ void TIM7_IRQHandler (void)
 	
 int main (void)
 {
-	if (currentSnake == 0){
+	if (currentSnake == NULL){
 		currentSnake = getNewSnake();
 		currentFood = getNewFood(currentSnake);
 	}
