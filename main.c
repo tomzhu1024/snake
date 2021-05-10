@@ -1,13 +1,4 @@
 #include "headers.h"
-
-#define TICK_PER_RENDER 4
-#define BLOCK_SIZE 10
-#define BLOCK_NUM_X 24
-#define BLOCK_NUM_Y 24
-#define BLOCK_PAD 5
-#define BOX_X 15
-#define BOX_Y 10
-
 #include "stm32f7xx_hal.h"
 #include "Board_GLCD.h"
 #include "GLCD_Config.h"
@@ -15,41 +6,44 @@
 #include <stdlib.h>
 
 
-int STATE = 3;
-struct Snake* currentSnake;
-struct Food* currentFood; 
-int DIRECTION = 3;
 
-struct TouchArea
-{
-	unsigned int enabled;
-	unsigned int startX;
-	unsigned int startY;
-	unsigned int sizeX;
-	unsigned int sizeY;
-};
+#define TICK_PER_RENDER 4
 
-static struct TouchArea snakeBTAUp;
-static struct TouchArea snakeBTADown;
-static struct TouchArea snakeBTALeft;
-static struct TouchArea snakeBTARight;
+
+
+
+//Global variables
+struct TouchArea snakeBTAUp;
+struct TouchArea snakeBTADown;
+struct TouchArea snakeBTALeft;
+struct TouchArea snakeBTARight;
+
+int PREV_STATE = MENU;
+int STATE = MENU;
+int DIRECTION = RIGHT;
+int uuid = 1;
+int currentGameId = 0;
+int historyScores[3] = {0,0,0};
+
+struct Snake* currentSnake = 0;
+struct Food* currentFood = 0; 
+struct GameRecord* gameRecords = 0;
+
+
 
 static unsigned int renderTickCount = 0;
-static unsigned int tmpX = 12;
-static unsigned int tmpY = 12;
-
 extern GLCD_FONT GLCD_Font_16x24;
 void SysTick_Handler(void);
 static void SystemClock_Config(void);
 void TIM7_IRQHandler (void);
-
 void drawSnakeBox (unsigned int);
 void drawSnakeBlock (unsigned int, unsigned int, unsigned int);
 void drawSnakeButton (unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 int checkButtonPressed (int, int, struct TouchArea *);
-
 void tickHandler (void);
 void touchHandler (int, int);
+
+
 
 void SysTick_Handler (void)
 {
@@ -99,70 +93,7 @@ static void SystemClock_Config(void)
   }
 }
 
-void drawSnakeBox (unsigned int lineColor)
-{
-	GLCD_SetForegroundColor(lineColor);
-	unsigned int edgeLenX = BLOCK_SIZE * BLOCK_NUM_X + 2 * BLOCK_PAD;
-	unsigned int edgeLenY = BLOCK_SIZE * BLOCK_NUM_Y + 2 * BLOCK_PAD;
-	GLCD_DrawHLine(BOX_X, BOX_Y, edgeLenX);
-	GLCD_DrawVLine(BOX_X, BOX_Y, edgeLenY);
-	GLCD_DrawHLine(BOX_X, BOX_Y + edgeLenY, edgeLenX);
-	GLCD_DrawVLine(BOX_X + edgeLenX, BOX_Y, edgeLenY);
-}
 
-void drawSnakeBlock (unsigned int x, unsigned int y, unsigned int fillColor)
-{
-	if (x >= BLOCK_NUM_X || y >= BLOCK_NUM_Y)
-	{
-		return;
-	}
-	GLCD_SetForegroundColor(fillColor);
-	unsigned int startX = BOX_X + BLOCK_PAD + x * BLOCK_SIZE;
-	unsigned int startY = BOX_Y + BLOCK_PAD + y * BLOCK_SIZE;
-	for (unsigned int i = 0; i < BLOCK_SIZE; i++)
-	{
-		GLCD_DrawHLine(startX, startY + i, BLOCK_SIZE);
-	}
-}
-
-void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int size, unsigned int spread, unsigned int color)
-{
-	GLCD_SetForegroundColor(color);
-	unsigned int textMarginX = size / 2 - 16;
-	unsigned int textMarginY = size / 2 - 12;
-	// up
-	snakeBTAUp.enabled = 1;
-	snakeBTAUp.startX = centerX - size / 2;
-	snakeBTAUp.startY = centerY - spread - size / 2;
-	snakeBTAUp.sizeX = size;
-	snakeBTAUp.sizeY = size;
-	GLCD_DrawRectangle(snakeBTAUp.startX, snakeBTAUp.startY, snakeBTAUp.sizeX, snakeBTAUp.sizeY);
-	GLCD_DrawString(snakeBTAUp.startX + textMarginX, snakeBTAUp.startY + textMarginY, "UP");
-	// down
-	snakeBTADown.enabled = 1;
-	snakeBTADown.startX = centerX - size / 2;
-	snakeBTADown.startY = centerY + spread - size / 2;
-	snakeBTADown.sizeX = size;
-	snakeBTADown.sizeY = size;
-	GLCD_DrawRectangle(snakeBTADown.startX, snakeBTADown.startY, snakeBTADown.sizeX, snakeBTADown.sizeY);
-	GLCD_DrawString(snakeBTADown.startX + textMarginX, snakeBTADown.startY + textMarginY, "DN");
-	// left
-	snakeBTALeft.enabled = 1;
-	snakeBTALeft.startX = centerX - spread - size / 2;
-	snakeBTALeft.startY = centerY - size / 2;
-	snakeBTALeft.sizeX = size;
-	snakeBTALeft.sizeY = size;
-	GLCD_DrawRectangle(snakeBTALeft.startX, snakeBTALeft.startY, snakeBTALeft.sizeX, snakeBTALeft.sizeY);
-	GLCD_DrawString(snakeBTALeft.startX + textMarginX, snakeBTALeft.startY + textMarginY, "LT");
-	// right
-	snakeBTARight.enabled = 1;
-	snakeBTARight.startX = centerX + spread - size / 2;
-	snakeBTARight.startY = centerY - size / 2;
-	snakeBTARight.sizeX = size;
-	snakeBTARight.sizeY = size;
-	GLCD_DrawRectangle(snakeBTARight.startX, snakeBTARight.startY, snakeBTARight.sizeX, snakeBTARight.sizeY);
-	GLCD_DrawString(snakeBTARight.startX + textMarginX, snakeBTARight.startY + textMarginY, "RT");
-}
 
 int checkButtonPressed (int x, int y, struct TouchArea * ta)
 {
@@ -170,42 +101,47 @@ int checkButtonPressed (int x, int y, struct TouchArea * ta)
 		(ta->startY <= (unsigned)y) && ((unsigned)y <= ta->startY + ta->sizeY);
 }
 
-void drawGame(void){
-	
-	drawSnakeBlock(currentFood->coor.x, currentFood->coor.y,GLCD_COLOR_RED);
-	drawSnakeBlock(currentSnake->boxToClear.x, currentSnake->boxToClear.y,GLCD_COLOR_BLACK);
-	for (int i = 0; i < currentSnake->length; i++) {
-		drawSnakeBlock(currentSnake->coor[i].x, currentSnake->coor[i].y,GLCD_COLOR_WHITE);
+void renderPage(void){
+	switch (STATE){
+		case MENU: {
+			renderMenuPage();
+			break;
+		}
+		case GAME_START: {
+			gameStartPageInitialize();
+			break;
+		}
+		case GAME_END: {
+			renderGameEndPage();
+			break;
+		}
+		case GAME_PAUSE: {
+			renderGamePausePage();
+			break;
+		}
+		case HISTORY_SCORE: {
+			renderHistoryScorePage();
+			break;
+		}
+		case GAME_RECORD : {
+			renderGameRecordPage();
+			break;
+		}
 	}
-	
 }
 
 
 void tickHandler (void)
 {
-	if (renderTickCount == 0)
-	{		
-		changeDir(currentSnake);
-		move(currentSnake);
-		
-		
-		if (checkDead(currentSnake)){
-			
-			TIM7->DIER &= ~(1 << 0);
-			STATE = 3;
-			currentSnake = 0;
-			currentFood = 0;
+	if (renderTickCount == 0){
+		if (PREV_STATE != STATE){
+			PREV_STATE = STATE;
+			renderPage();
 		}
-		
-		
-		checkFood(currentSnake,currentFood);
-		if (currentFood->eaten){
-			currentFood = getNewFood(currentSnake);
+		if (STATE == GAME_START){
+			gameRender();
 		}
-		
-		drawGame();
-		
-		
+	
 	}
 	if (++renderTickCount == TICK_PER_RENDER - 1)
 	{
@@ -213,24 +149,35 @@ void tickHandler (void)
 	}
 }
 
+
+
 void touchHandler (int x, int y)
 {
-	if (checkButtonPressed(x, y, &snakeBTAUp) == 1)
-	{
-		DIRECTION = 0;
+	switch (STATE){
+		case GAME_START :{
+			if (checkButtonPressed(x, y, &snakeBTAUp) == 1)
+			{
+				DIRECTION = 0;
+			}
+			if (checkButtonPressed(x, y, &snakeBTADown) == 1)
+			{
+				DIRECTION = 1;
+			}
+			if (checkButtonPressed(x, y, &snakeBTALeft) == 1)
+			{
+				DIRECTION = 2;
+			}
+			if (checkButtonPressed(x, y, &snakeBTARight) == 1)
+			{
+				DIRECTION = 3;
+			}
+			break;
+		}
+	
+	
+	
 	}
-	if (checkButtonPressed(x, y, &snakeBTADown) == 1)
-	{
-		DIRECTION = 1;
-	}
-	if (checkButtonPressed(x, y, &snakeBTALeft) == 1)
-	{
-		DIRECTION = 2;
-	}
-	if (checkButtonPressed(x, y, &snakeBTARight) == 1)
-	{
-		DIRECTION = 3;
-	}
+	
 }
 
 void TIM7_IRQHandler (void)
@@ -270,9 +217,7 @@ int main (void)
 	// unmask TIM7 update interrupt
 	NVIC_EnableIRQ(TIM7_IRQn);
 	
-	drawSnakeBox(GLCD_COLOR_YELLOW);
-	//drawSnakeBlock(23, 23, GLCD_COLOR_YELLOW);
-	drawSnakeButton(370, 136, 50, 60, GLCD_COLOR_RED);
+	
 		
 	
 	// detect touch event

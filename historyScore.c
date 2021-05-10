@@ -1,14 +1,7 @@
-extern int STATE;
+#include "headers.h"
 
-static void drawHistoryScore(void){
-	//to do: render history score page
 
-}
+void renderHistoryScorePage(void){
+	// to do: render  page
 
-static void menuLoop(void){
-	drawHistoryScore();
-	
-	while (1){
-		if (STATE != 4) break;
-	}
 }

@@ -1,17 +1,8 @@
-extern int STATE;
+#include "headers.h"
 
 
-
-static void drawMenu(void){
+void renderMenuPage(void){
 	// to do: render menu page
 
-
 }
 
-static void menuLoop(void){
-	drawMenu();
-	
-	while (1){
-		if (STATE != 0) break;
-	}
-}

@@ -25,7 +25,7 @@ struct Snake* getNewSnake() {
 	box_to_clear->y = 10;
 
 	struct Snake* snake_p = (struct Snake *) malloc(sizeof(struct Snake));
-	snake_p->direction = 3;
+	snake_p->direction = RIGHT;
 	snake_p->buffer = INITIAL_BUFFER;
 	snake_p->length = INITIAL_LENGTH;
 	snake_p->coor = start_coor;
@@ -90,8 +90,6 @@ void checkFood(struct Snake* snake, struct Food* food) {
 }
 
 
-
-
 void move(struct Snake* snake) {
 	snake->boxToClear.x = snake->coor[snake->length-1].x;
 	snake->boxToClear.y = snake->coor[snake->length-1].y;
@@ -100,19 +98,19 @@ void move(struct Snake* snake) {
 		snake->coor[i].y = snake->coor[i-1].y;
 	}
 	switch (snake->direction) {
-		case 0 : {
+		case UP : {
 			snake->coor[0].y -= 1;
 			break;
 		}
-		case 1 : {
+		case DOWN : {
 			snake->coor[0].y += 1;
 			break;
 		}
-		case 2 : {
+		case LEFT : {
 			snake->coor[0].x -= 1;
 			break;
 		} 
-		case 3 : {
+		case RIGHT : {
 			snake->coor[0].x += 1;
 			break;
 		} 
@@ -120,7 +118,7 @@ void move(struct Snake* snake) {
 
 }
 
- int checkDead(struct Snake* snake) {
+int checkDead(struct Snake* snake) {
 	if (snake->coor[0].x < 0 || snake->coor[0].x > 23 || snake->coor[0].y < 0 || snake->coor[0].y > 23) {
 		return 1;
 	}
@@ -136,13 +134,13 @@ void move(struct Snake* snake) {
 
 void changeDir(struct Snake* snake) {
 	switch (DIRECTION) {
-	case 0: if (snake->direction != 1) snake->direction = 0;
+	case UP: if (snake->direction != DOWN) snake->direction = UP;
 		break;
-	case 1: if (snake->direction != 0) snake->direction = 1;
+	case DOWN: if (snake->direction != UP) snake->direction = DOWN;
 		break;
-	case 2: if (snake->direction != 3) snake->direction = 2;
+	case LEFT: if (snake->direction != RIGHT) snake->direction = LEFT;
 		break;
-	case 3: if (snake->direction != 2) snake->direction = 3;
+	case RIGHT: if (snake->direction != LEFT) snake->direction = RIGHT;
 		break;
 	}
 }
