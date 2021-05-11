@@ -3,36 +3,36 @@
 #include "GLCD_Config.h"
 #include "stm32f7xx.h"
 
-extern struct TouchArea menuBTANew;
-extern struct TouchArea menuBTALoad;
-extern struct TouchArea menuBRAScores;
+extern volatile struct TouchArea menuBTANew;
+extern volatile struct TouchArea menuBTALoad;
+extern volatile struct TouchArea menuBTAScores;
 
 void renderMenuPage(void) {
 	GLCD_SetForegroundColor(GLCD_COLOR_RED);
-	GLCD_DrawString(168, 20, "S N A K E");
+	GLCD_DrawString(168, 30, "S N A K E");
 	
-	menuBTANew.startX = 150;
-	menuBTANew.startY = 60;
-	menuBTANew.sizeX = 180;
+	menuBTANew.startX = 130;
+	menuBTANew.startY = 85;
+	menuBTANew.sizeX = 220;
 	menuBTANew.sizeY = 40;
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
 	GLCD_DrawRectangle(menuBTANew.startX, menuBTANew.startY, menuBTANew.sizeX, menuBTANew.sizeY);
-	GLCD_DrawString(menuBTANew.startX + 26, menuBTANew.startY + 10, "New Game");
+	GLCD_DrawString(menuBTANew.startX + 46, menuBTANew.startY + 10, "New Game");
 
-	menuBTALoad.startX = 150;
-	menuBTALoad.startY = 60;
-	menuBTALoad.sizeX = 180;
+	menuBTALoad.startX = 130;
+	menuBTALoad.startY = 140;
+	menuBTALoad.sizeX = 220;
 	menuBTALoad.sizeY = 40;
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
-	GLCD_DrawRectangle(menuBTANew.startX, menuBTANew.startY, menuBTANew.sizeX, menuBTANew.sizeY);
-	GLCD_DrawString(menuBTANew.startX + 26, menuBTANew.startY + 10, "New Game");
+	GLCD_DrawRectangle(menuBTALoad.startX, menuBTALoad.startY, menuBTALoad.sizeX, menuBTALoad.sizeY);
+	GLCD_DrawString(menuBTALoad.startX + 38, menuBTALoad.startY + 10, "Load Game");
 
-	menuBTANew.startX = 150;
-	menuBTANew.startY = 60;
-	menuBTANew.sizeX = 180;
-	menuBTANew.sizeY = 40;
+	menuBTAScores.startX = 130;
+	menuBTAScores.startY = 195;
+	menuBTAScores.sizeX = 220;
+	menuBTAScores.sizeY = 40;
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
-	GLCD_DrawRectangle(menuBTANew.startX, menuBTANew.startY, menuBTANew.sizeX, menuBTANew.sizeY);
-	GLCD_DrawString(menuBTANew.startX + 26, menuBTANew.startY + 10, "New Game");
+	GLCD_DrawRectangle(menuBTAScores.startX, menuBTAScores.startY, menuBTAScores.sizeX, menuBTAScores.sizeY);
+	GLCD_DrawString(menuBTAScores.startX + 6, menuBTAScores.startY + 10, "History Score");
 }
 

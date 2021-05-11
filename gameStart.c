@@ -103,8 +103,6 @@ void gameStartPageInitialize(void){
 		currentSnake = getNewSnake();
 		currentFood = getNewFood(currentSnake);
 	}
-	GLCD_SetBackgroundColor(GLCD_COLOR_BLACK);
-	GLCD_ClearScreen();
 	drawSnakeBox(GLCD_COLOR_YELLOW);
 	drawSnakeButton(370, 136, 45, 45, GLCD_COLOR_RED);
 	startTimer();
@@ -126,9 +124,11 @@ void gameRender(void){
 		stopTimer();
 		updateHistoryScore();
 		STATE = GAME_END;
-		currentSnake = 0;
-		currentFood = 0;
+		renderPage();
+		currentSnake = NULL;
+		currentFood = NULL;
 		currentGameId = 0;
+		return;  // avoid new food generation after death
 	}
 	checkFood(currentSnake,currentFood);
 	if (currentFood->eaten){

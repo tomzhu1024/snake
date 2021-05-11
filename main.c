@@ -8,13 +8,15 @@
 
 
 //Global variables
-struct TouchArea snakeBTAUp;
-struct TouchArea snakeBTADown;
-struct TouchArea snakeBTALeft;
-struct TouchArea snakeBTARight;
-struct TouchArea menuBTANew;
-struct TouchArea menuBTALoad;
-struct TouchArea menuBRAScores;
+volatile struct TouchArea snakeBTAUp;
+volatile struct TouchArea snakeBTADown;
+volatile struct TouchArea snakeBTALeft;
+volatile struct TouchArea snakeBTARight;
+volatile struct TouchArea menuBTANew;
+volatile struct TouchArea menuBTALoad;
+volatile struct TouchArea menuBTAScores;
+volatile struct TouchArea endBTAMenu;
+volatile struct TouchArea scoresBTAMenu;
 
 int PREV_STATE = MENU;
 int STATE = MENU;
@@ -28,7 +30,7 @@ struct Food* currentFood = NULL;
 struct GameRecord* gameRecords = NULL;
 
 static unsigned int tickCount = 0;
-static unsigned int tickPSC = 4;
+static unsigned int tickPSC = 8;
 
 extern GLCD_FONT GLCD_Font_16x24;
 void SysTick_Handler(void);
@@ -165,6 +167,16 @@ void touchHandler (int x, int y)
 				STATE = GAME_START;
 				renderPage();
 			}
+			if (checkButtonPressed(x, y, &menuBTALoad) == 1)
+			{
+				STATE = GAME_RECORD;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &menuBTAScores) == 1)
+			{
+				STATE = HISTORY_SCORE;
+				renderPage();
+			}
 			break;
 		}
 		case GAME_START :{
@@ -186,8 +198,24 @@ void touchHandler (int x, int y)
 			}
 			break;
 		}
-	
-	
+		case GAME_END :
+		{
+			if (checkButtonPressed(x, y, &endBTAMenu) == 1)
+			{
+				STATE = MENU;
+				renderPage();
+			}
+			break;
+		}
+		case HISTORY_SCORE:
+		{
+			if (checkButtonPressed(x, y, &scoresBTAMenu) == 1)
+			{
+				STATE = MENU;
+				renderPage();
+			}
+			break;
+		}
 	
 	}
 	
