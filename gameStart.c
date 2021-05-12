@@ -23,6 +23,7 @@ extern struct TouchArea snakeBTAUp;
 extern struct TouchArea snakeBTADown;
 extern struct TouchArea snakeBTALeft;
 extern struct TouchArea snakeBTARight;
+extern struct TouchArea snakeBTAPause;
 
 
 
@@ -87,6 +88,14 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	snakeBTARight.sizeY = size;
 	GLCD_DrawRectangle(snakeBTARight.startX, snakeBTARight.startY, snakeBTARight.sizeX, snakeBTARight.sizeY);
 	GLCD_DrawString(snakeBTARight.startX + textMarginX, snakeBTARight.startY + textMarginY, "RT");
+	// pause
+	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
+	snakeBTAPause.startX = 390;
+	snakeBTAPause.startY = 1;
+	snakeBTAPause.sizeX = 88;
+	snakeBTAPause.sizeY = 30;
+	GLCD_DrawRectangle(snakeBTAPause.startX, snakeBTAPause.startY, snakeBTAPause.sizeX, snakeBTAPause.sizeY);
+	GLCD_DrawString(snakeBTAPause.startX + 5, snakeBTAPause.startY + 6, "PAUSE"); 
 }
 
 
@@ -126,9 +135,9 @@ void gameRender(void){
 		updateHistoryScore();
 		STATE = GAME_END;
 		renderPage();
-		//currentFood = NULL;
+		currentSnake = NULL;
+		currentFood = NULL;
 		currentGameId = 0;
-		//currentSnake = NULL;
 		return;  // avoid new food generation after death
 	}
 	checkFood(currentSnake,currentFood);

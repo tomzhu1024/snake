@@ -12,6 +12,7 @@ volatile struct TouchArea snakeBTAUp;
 volatile struct TouchArea snakeBTADown;
 volatile struct TouchArea snakeBTALeft;
 volatile struct TouchArea snakeBTARight;
+volatile struct TouchArea snakeBTAPause;
 volatile struct TouchArea menuBTANew;
 volatile struct TouchArea menuBTALoad;
 volatile struct TouchArea menuBTAScores;
