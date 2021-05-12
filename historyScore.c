@@ -4,7 +4,7 @@
 #include "stm32f7xx.h"
 #include <stdio.h>
 
-extern int* historyScores;
+extern int historyScores[3];
 extern struct TouchArea scoresBTAMenu;
 
 

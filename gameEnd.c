@@ -6,7 +6,7 @@
 
 
 extern struct Snake* currentSnake;
-extern int* historyScores;
+extern int historyScores[3];
 extern struct TouchArea endBTAMenu;
 
 
@@ -24,6 +24,7 @@ void renderGameEndPage(void){
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
 	GLCD_DrawRectangle(endBTAMenu.startX, endBTAMenu.startY, endBTAMenu.sizeX, endBTAMenu.sizeY);
 	GLCD_DrawString(endBTAMenu.startX + 22, endBTAMenu.startY + 10, "Return Menu");
+	currentSnake = NULL;
 }
 
 void updateHistoryScore(void){
