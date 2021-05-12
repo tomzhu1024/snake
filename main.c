@@ -28,6 +28,8 @@ volatile struct TouchArea recordBTA4;
 volatile struct TouchArea recordBTA5;
 volatile struct TouchArea recordBTA6;
 
+volatile int gameRecordLength = 0;
+
 int PREV_STATE = MENU;
 int STATE = MENU;
 int DIRECTION = RIGHT;
@@ -220,6 +222,12 @@ void touchHandler (int x, int y)
 				STATE = GAME_START;
 				renderPage();
 			}
+			if (checkButtonPressed(x, y, &pauseBTASave) == 1) {
+				gameSave();
+				STATE = MENU;
+				renderPage();
+			}
+
 			break;
 		}
 		case GAME_END :
@@ -240,37 +248,37 @@ void touchHandler (int x, int y)
 			}
 			if (checkButtonPressed(x, y, &recordBTA1) == 1)
 			{
-
+				loadGame(0);
 				STATE = GAME_START;
 				renderPage();
 			}
 			if (checkButtonPressed(x, y, &recordBTA2) == 1)
 			{
-				
+				loadGame(1);
 				STATE = GAME_START;
 				renderPage();
 			}
 			if (checkButtonPressed(x, y, &recordBTA3) == 1)
 			{
-				
+				loadGame(2);
 				STATE = GAME_START;
 				renderPage();
 			}
 			if (checkButtonPressed(x, y, &recordBTA4) == 1)
 			{
-				
+				loadGame(3);
 				STATE = GAME_START;
 				renderPage();
 			}
 			if (checkButtonPressed(x, y, &recordBTA5) == 1)
 			{
-				
+				loadGame(4);
 				STATE = GAME_START;
 				renderPage();
 			}
 			if (checkButtonPressed(x, y, &recordBTA6) == 1)
 			{
-				
+				loadGame(5);
 				STATE = GAME_START;
 				renderPage();
 			}

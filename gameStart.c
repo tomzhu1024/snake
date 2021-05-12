@@ -25,6 +25,7 @@ extern struct TouchArea snakeBTALeft;
 extern struct TouchArea snakeBTARight;
 extern struct TouchArea snakeBTAPause;
 
+extern struct GameRecord* gameRecords;
 
 
 
@@ -60,6 +61,9 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	GLCD_SetForegroundColor(color);
 	unsigned int textMarginX = size / 2 - 16;
 	unsigned int textMarginY = size / 2 - 12;
+	char buffer[4];
+	sprintf(buffer, "%d", currentGameId);
+	GLCD_DrawString(5, 5, buffer);
 	// up
 	snakeBTAUp.startX = centerX - size / 2;
 	snakeBTAUp.startY = centerY - spread - size / 2;
@@ -135,10 +139,7 @@ void gameRender(void){
 		updateHistoryScore();
 		STATE = GAME_END;
 		renderPage();
-		free(currentSnake);
-		currentSnake = NULL;
-		free(currentFood);
-		currentFood = NULL;
+		deleteRecord(currentGameId);
 		currentGameId = 0;
 		return;  // avoid new food generation after death
 	}
@@ -147,4 +148,37 @@ void gameRender(void){
 		currentFood = getNewFood(currentSnake);
 	}
 	drawSnakeAndFood();
+}
+
+void deleteRecord(int recordId){
+ struct GameRecord* p = gameRecords;
+ 
+ if (p == NULL){
+	free(currentSnake->coor);
+	free(currentSnake);
+	free(currentFood);
+	currentSnake = NULL;
+	currentFood = NULL;
+  return;
+ }
+ if (p->recordId == recordId){
+  struct GameRecord* tmp = p->nextRecord;
+  free(gameRecords);
+  gameRecords = tmp;
+  return;
+ }
+ struct GameRecord* PREV = p;
+ p = p->nextRecord;
+ while (p){
+  if (p->recordId == recordId){
+   struct GameRecord* tmp = p->nextRecord;
+   PREV->nextRecord = tmp;
+   free(p);
+   return;
+  }
+  p = p->nextRecord;
+  PREV = PREV->nextRecord;
+ }
+ currentSnake = NULL;
+ currentFood = NULL;
 }

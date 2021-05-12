@@ -10,6 +10,7 @@ extern int uuid;
 extern struct Snake* currentSnake;
 extern struct Food* currentFood;
 extern struct GameRecord* gameRecords;
+extern int gameRecordLength;
 
 extern struct TouchArea pauseBTAResume;
 extern struct TouchArea pauseBTASave;
@@ -36,42 +37,62 @@ void renderGamePausePage(void){
 	GLCD_DrawString(pauseBTASave.startX + 78, pauseBTASave.startY + 10, "Save");
 }
 
-
 void gameSave(void){
-	struct GameRecord* p = gameRecords;
-	
-	if (p==0){
-		struct GameRecord* newRecord = (struct GameRecord*) malloc(sizeof(struct GameRecord));
-		newRecord->nextRecord = 0;
-		newRecord->snake = currentSnake;
-		newRecord->food = currentFood;
-		newRecord->recordId = uuid;
-		uuid++;
-		gameRecords = newRecord;
-		return;
-	}
-	
-	while (p){
-		if ( p->recordId == currentGameId){
-			free(p->snake);
-			free(p->food);
-			p->snake = currentSnake;
-			p->food = currentFood;
-			currentSnake = 0;
-			currentFood = 0;
-			return;
-		}
-		
-		if (p->nextRecord == 0){
-			struct GameRecord* newRecord = (struct GameRecord*) malloc(sizeof(struct GameRecord));
-			newRecord->nextRecord = 0;
-			newRecord->snake = currentSnake;
-			newRecord->food = currentFood;
-			newRecord->recordId = uuid;
-			uuid++;
-			p->nextRecord = newRecord;
-		}
-		
-		p = p->nextRecord;
-	}
+ struct GameRecord* p = gameRecords;
+
+ if (gameRecordLength >= 6){
+  free(p->snake->coor);
+  free(p->snake);
+  free(p->food);
+  p->snake = currentSnake;
+  p->food = currentFood;
+  p->recordId = currentGameId;
+  currentSnake = NULL;
+  currentFood = NULL;
+  return;
+ }
+ 
+ gameRecordLength++;
+
+ if (p == NULL){
+  struct GameRecord* newRecord = (struct GameRecord*) malloc(sizeof(struct GameRecord));
+  newRecord->nextRecord = 0;
+  newRecord->snake = currentSnake;
+  newRecord->food = currentFood;
+  newRecord->recordId = uuid;
+  uuid++;
+  gameRecords = newRecord;
+  currentSnake = NULL;
+  currentFood = NULL;
+  currentGameId = 0;
+  return;
+ }
+ 
+ while (p != NULL){
+  if ( p->recordId == currentGameId){
+   free(p->snake->coor);
+   free(p->snake);
+   free(p->food);
+   p->snake = currentSnake;
+   p->food = currentFood;
+   currentSnake = NULL;
+   currentFood = NULL;
+   currentGameId = 0;
+   return;
+  }
+  
+  if (p->nextRecord == NULL){
+   struct GameRecord* newRecord = (struct GameRecord*) malloc(sizeof(struct GameRecord));
+   newRecord->nextRecord = 0;
+   newRecord->snake = currentSnake;
+   newRecord->food = currentFood;
+   newRecord->recordId = uuid;
+   uuid++;
+   p->nextRecord = newRecord;
+	 return;
+  }
+  
+  p = p->nextRecord;
+ }
 }
+

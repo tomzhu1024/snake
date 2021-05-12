@@ -63,7 +63,7 @@ void renderHistoryScorePage(void);
 
 // game record
 void renderGameRecordPage(void);
-
+void loadGame(int);
 
 // game start
 
@@ -93,6 +93,8 @@ void gameStartPageInitialize(void);
 
 void gameRender(void);
 
+void deleteRecord(int recordId);
+
 // game end
 void renderGameEndPage(void);
 void updateHistoryScore(void);
@@ -101,6 +103,5 @@ void updateHistoryScore(void);
 void renderGamePausePage(void);
 
 void gameSave(void);
-
 
 

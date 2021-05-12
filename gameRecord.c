@@ -4,6 +4,12 @@
 #include "stm32f7xx.h"
 #include <stdio.h>
 
+extern struct GameRecord* gameRecords;
+
+extern int currentGameId;
+extern struct Snake* currentSnake;
+extern struct Food* currentFood;
+
 
 extern volatile struct TouchArea recordBTAMenu;
 extern volatile struct TouchArea recordBTA1;
@@ -70,4 +76,16 @@ void renderGameRecordPage(void){
 	GLCD_DrawRectangle(recordBTA6.startX, recordBTA6.startY, recordBTA6.sizeX, recordBTA6.sizeY);
 	GLCD_DrawString(recordBTA6.startX + 17, recordBTA6.startY + 10, "6");
 
+}
+
+void loadGame(int gamePos){
+ struct GameRecord* p = gameRecords;
+ while(gamePos>0 && p != NULL){
+  p = p->nextRecord;
+ }
+ if (p != NULL){
+  currentSnake = p->snake;
+  currentFood = p->food;
+  currentGameId = p->recordId;
+ }
 }
