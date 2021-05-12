@@ -18,6 +18,15 @@ volatile struct TouchArea menuBTALoad;
 volatile struct TouchArea menuBTAScores;
 volatile struct TouchArea endBTAMenu;
 volatile struct TouchArea scoresBTAMenu;
+volatile struct TouchArea pauseBTAResume;
+volatile struct TouchArea pauseBTASave;
+volatile struct TouchArea recordBTAMenu;
+volatile struct TouchArea recordBTA1;
+volatile struct TouchArea recordBTA2;
+volatile struct TouchArea recordBTA3;
+volatile struct TouchArea recordBTA4;
+volatile struct TouchArea recordBTA5;
+volatile struct TouchArea recordBTA6;
 
 int PREV_STATE = MENU;
 int STATE = MENU;
@@ -197,6 +206,20 @@ void touchHandler (int x, int y)
 			{
 				DIRECTION = 3;
 			}
+			if (checkButtonPressed(x, y, &snakeBTAPause) == 1)
+			{
+				stopTimer();
+				STATE = GAME_PAUSE;
+				renderPage();
+			}
+			break;
+		}
+		case GAME_PAUSE:
+		{
+			if (checkButtonPressed(x, y, &pauseBTAResume) == 1) {
+				STATE = GAME_START;
+				renderPage();
+			}
 			break;
 		}
 		case GAME_END :
@@ -204,6 +227,51 @@ void touchHandler (int x, int y)
 			if (checkButtonPressed(x, y, &endBTAMenu) == 1)
 			{
 				STATE = MENU;
+				renderPage();
+			}
+			break;
+		}
+		case GAME_RECORD:
+		{
+			if (checkButtonPressed(x, y, &recordBTAMenu) == 1)
+			{
+				STATE = MENU;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA1) == 1)
+			{
+
+				STATE = GAME_START;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA2) == 1)
+			{
+				
+				STATE = GAME_START;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA3) == 1)
+			{
+				
+				STATE = GAME_START;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA4) == 1)
+			{
+				
+				STATE = GAME_START;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA5) == 1)
+			{
+				
+				STATE = GAME_START;
+				renderPage();
+			}
+			if (checkButtonPressed(x, y, &recordBTA6) == 1)
+			{
+				
+				STATE = GAME_START;
 				renderPage();
 			}
 			break;

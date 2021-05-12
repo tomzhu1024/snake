@@ -1,4 +1,8 @@
 #include "headers.h"
+#include "Board_GLCD.h"
+#include "GLCD_Config.h"
+#include "stm32f7xx.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 extern int currentGameId;
@@ -7,10 +11,29 @@ extern struct Snake* currentSnake;
 extern struct Food* currentFood;
 extern struct GameRecord* gameRecords;
 
+extern struct TouchArea pauseBTAResume;
+extern struct TouchArea pauseBTASave;
+
 
 void renderGamePausePage(void){
-	// to do: render  page
+	GLCD_SetForegroundColor(GLCD_COLOR_RED);
+	GLCD_DrawString(168, 30, "S N A K E");
+	
+	pauseBTAResume.startX = 130;
+	pauseBTAResume.startY = 85;
+	pauseBTAResume.sizeX = 220;
+	pauseBTAResume.sizeY = 40;
+	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
+	GLCD_DrawRectangle(pauseBTAResume.startX, pauseBTAResume.startY, pauseBTAResume.sizeX, pauseBTAResume.sizeY);
+	GLCD_DrawString(pauseBTAResume.startX + 61, pauseBTAResume.startY + 10, "Resume");
 
+	pauseBTASave.startX = 130;
+	pauseBTASave.startY = 140;
+	pauseBTASave.sizeX = 220;
+	pauseBTASave.sizeY = 40;
+	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
+	GLCD_DrawRectangle(pauseBTASave.startX, pauseBTASave.startY, pauseBTASave.sizeX, pauseBTASave.sizeY);
+	GLCD_DrawString(pauseBTASave.startX + 78, pauseBTASave.startY + 10, "Save");
 }
 
 

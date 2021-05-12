@@ -135,7 +135,9 @@ void gameRender(void){
 		updateHistoryScore();
 		STATE = GAME_END;
 		renderPage();
+		free(currentSnake);
 		currentSnake = NULL;
+		free(currentFood);
 		currentFood = NULL;
 		currentGameId = 0;
 		return;  // avoid new food generation after death
