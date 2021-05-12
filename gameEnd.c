@@ -11,9 +11,10 @@ extern struct TouchArea endBTAMenu;
 
 
 void renderGameEndPage(void){
+	//int score = currentSnake->length-3;
 	GLCD_SetForegroundColor(GLCD_COLOR_RED);
 	GLCD_DrawString(176, 70, "GAME END");
-	char buffer[1024];
+	char buffer[64];
 	sprintf(buffer, "Score: %d", currentSnake->length-3);
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
 	GLCD_DrawString(168, 110, buffer);
@@ -24,7 +25,6 @@ void renderGameEndPage(void){
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
 	GLCD_DrawRectangle(endBTAMenu.startX, endBTAMenu.startY, endBTAMenu.sizeX, endBTAMenu.sizeY);
 	GLCD_DrawString(endBTAMenu.startX + 22, endBTAMenu.startY + 10, "Return Menu");
-	currentSnake = NULL;
 }
 
 void updateHistoryScore(void){

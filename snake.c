@@ -5,7 +5,7 @@
 
 #define  MAX_LENGTH 100
 #define  INITIAL_LENGTH  3
-#define INITIAL_BUFFER  1000
+#define INITIAL_BUFFER  576
 #define  SIZE 10
 
 extern int DIRECTION;

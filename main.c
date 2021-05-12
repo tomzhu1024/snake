@@ -30,7 +30,7 @@ struct Food* currentFood = NULL;
 struct GameRecord* gameRecords = NULL;
 
 static unsigned int tickCount = 0;
-static unsigned int tickPSC = 8;
+static unsigned int tickPSC = 4;
 
 extern GLCD_FONT GLCD_Font_16x24;
 void SysTick_Handler(void);

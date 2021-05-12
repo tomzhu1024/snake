@@ -3,6 +3,7 @@
 #include "GLCD_Config.h"
 #include "stm32f7xx.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 
 
@@ -125,9 +126,10 @@ void gameRender(void){
 		updateHistoryScore();
 		STATE = GAME_END;
 		renderPage();
-		currentFood = NULL;
+		//currentFood = NULL;
 		currentGameId = 0;
-return;  // avoid new food generation after death
+		//currentSnake = NULL;
+		return;  // avoid new food generation after death
 	}
 	checkFood(currentSnake,currentFood);
 	if (currentFood->eaten){
