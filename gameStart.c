@@ -142,6 +142,7 @@ void gameRender(void){
 	}
 	checkFood(currentSnake,currentFood);
 	if (currentFood->eaten){
+		free(currentFood);
 		currentFood = getNewFood(currentSnake);
 	}
 	drawSnakeAndFood();
