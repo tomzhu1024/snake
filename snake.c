@@ -39,7 +39,7 @@ struct Snake* getNewSnake() {
 struct Food* getNewFood(struct Snake* snake) {
 	struct Food* food = (struct Food *) malloc(sizeof(struct Food));
 	food->eaten = 0;
-	int proper = 0;
+	volatile char proper = 0;
 	while (!proper) {
 
 		proper = 1;
