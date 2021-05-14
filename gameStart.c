@@ -27,7 +27,7 @@ extern struct TouchArea snakeBTAPause;
 
 extern struct GameRecord* gameRecords;
 
-
+extern volatile unsigned int tickPSC;
 
 
 void drawSnakeBox (unsigned int lineColor)
@@ -61,9 +61,6 @@ void drawSnakeButton (unsigned int centerX, unsigned int centerY, unsigned int s
 	GLCD_SetForegroundColor(color);
 	unsigned int textMarginX = size / 2 - 16;
 	unsigned int textMarginY = size / 2 - 12;
-	char buffer[4];
-	sprintf(buffer, "%d", currentGameId);
-	GLCD_DrawString(5, 5, buffer);
 	// up
 	snakeBTAUp.startX = centerX - size / 2;
 	snakeBTAUp.startY = centerY - spread - size / 2;
@@ -148,6 +145,35 @@ void gameRender(void){
 		currentFood = getNewFood(currentSnake);
 	}
 	drawSnakeAndFood();
+	// draw score
+	char buffer[12];
+	sprintf(buffer, "SCORE: %04d", currentSnake->length - 3);
+	GLCD_DrawString(285, 38, buffer);
+	// update speed
+	if (currentSnake->length < 8)
+	{
+		tickPSC = 8;
+	}
+	else if (currentSnake->length < 13)
+	{
+		tickPSC = 7;
+	}
+	else if (currentSnake->length < 18)
+	{
+		tickPSC = 6;
+	}
+	else if (currentSnake->length < 23)
+	{
+		tickPSC = 5;
+	}
+	else if (currentSnake->length < 28)
+	{
+		tickPSC = 4;
+	}
+	else if (currentSnake->length < 33)
+	{
+		tickPSC = 3;
+	}
 }
 
 void deleteRecord(int recordId){

@@ -28,13 +28,13 @@ void renderGamePausePage(void){
 	GLCD_DrawRectangle(pauseBTAResume.startX, pauseBTAResume.startY, pauseBTAResume.sizeX, pauseBTAResume.sizeY);
 	GLCD_DrawString(pauseBTAResume.startX + 61, pauseBTAResume.startY + 10, "Resume");
 
-	pauseBTASave.startX = 130;
-	pauseBTASave.startY = 140;
-	pauseBTASave.sizeX = 220;
-	pauseBTASave.sizeY = 40;
-	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
-	GLCD_DrawRectangle(pauseBTASave.startX, pauseBTASave.startY, pauseBTASave.sizeX, pauseBTASave.sizeY);
-	GLCD_DrawString(pauseBTASave.startX + 78, pauseBTASave.startY + 10, "Save");
+//	pauseBTASave.startX = 130;
+//	pauseBTASave.startY = 140;
+//	pauseBTASave.sizeX = 220;
+//	pauseBTASave.sizeY = 40;
+//	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
+//	GLCD_DrawRectangle(pauseBTASave.startX, pauseBTASave.startY, pauseBTASave.sizeX, pauseBTASave.sizeY);
+//	GLCD_DrawString(pauseBTASave.startX + 78, pauseBTASave.startY + 10, "Save");
 }
 
 void gameSave(void){

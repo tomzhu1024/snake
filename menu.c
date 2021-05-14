@@ -19,16 +19,16 @@ void renderMenuPage(void) {
 	GLCD_DrawRectangle(menuBTANew.startX, menuBTANew.startY, menuBTANew.sizeX, menuBTANew.sizeY);
 	GLCD_DrawString(menuBTANew.startX + 46, menuBTANew.startY + 10, "New Game");
 
-	menuBTALoad.startX = 130;
-	menuBTALoad.startY = 140;
-	menuBTALoad.sizeX = 220;
-	menuBTALoad.sizeY = 40;
-	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
-	GLCD_DrawRectangle(menuBTALoad.startX, menuBTALoad.startY, menuBTALoad.sizeX, menuBTALoad.sizeY);
-	GLCD_DrawString(menuBTALoad.startX + 38, menuBTALoad.startY + 10, "Load Game");
+//	menuBTALoad.startX = 130;
+//	menuBTALoad.startY = 140;
+//	menuBTALoad.sizeX = 220;
+//	menuBTALoad.sizeY = 40;
+//	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
+//	GLCD_DrawRectangle(menuBTALoad.startX, menuBTALoad.startY, menuBTALoad.sizeX, menuBTALoad.sizeY);
+//	GLCD_DrawString(menuBTALoad.startX + 38, menuBTALoad.startY + 10, "Load Game");
 
 	menuBTAScores.startX = 130;
-	menuBTAScores.startY = 195;
+	menuBTAScores.startY = 140;
 	menuBTAScores.sizeX = 220;
 	menuBTAScores.sizeY = 40;
 	GLCD_SetForegroundColor(GLCD_COLOR_WHITE);
